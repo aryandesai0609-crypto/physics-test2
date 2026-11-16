@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Physics C Test Lab: Forces, Circles & Energy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--acc:#4f46e5;--good:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#312e81,#4f46e5);color:#fff;padding:14px 18px}
+header h1{margin:0;font-size:21px}header .sub{opacity:.9;font-size:14px}#count{font-weight:700;background:rgba(255,255,255,.18);padding:2px 10px;border-radius:99px;display:inline-block;margin-top:6px}
+nav{display:flex;gap:4px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--line);padding:6px 12px;position:sticky;top:0;z-index:5}
+.tab{border:0;background:none;padding:8px 14px;border-radius:8px;font-weight:600;color:var(--mut);cursor:pointer;font-size:15px}.tab.on{background:#eef2ff;color:var(--acc)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+h2{margin:.2em 0 .5em}h3{margin:1.2em 0 .4em}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:9px;padding:8px 14px;font-weight:600;cursor:pointer;font-size:15px}.btn.ghost{background:#eef2ff;color:var(--acc)}.btn.small{padding:4px 10px;font-size:13px}.btn:disabled{opacity:.5}
+.btn.pulse{animation:p 1.2s infinite}@keyframes p{50%{box-shadow:0 0 0 6px rgba(79,70,229,.25)}}
+.learn{display:grid;grid-template-columns:270px 1fr;gap:16px}@media(max-width:800px){.learn{grid-template-columns:1fr}}
+#lessonList{display:flex;flex-direction:column;gap:4px;position:sticky;top:60px;align-self:start}
+.li{text-align:left;border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;cursor:pointer;font-size:14px}.li.cur{border-color:var(--acc);background:#eef2ff}.li.done{color:var(--good)}
+#lessonView{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+.big{font-size:17px}.tbl{border-collapse:collapse;width:100%;margin:8px 0;font-size:15px}.tbl td,.tbl th{border:1px solid var(--line);padding:6px 8px;vertical-align:top}.tbl th{background:#f8fafc;text-align:left}
+.recipe{background:#eef2ff;border-left:4px solid var(--acc);padding:8px 14px;border-radius:8px;margin:10px 0}
+.trap{background:#fef2f2;border-left:4px solid #dc2626;padding:8px 14px;border-radius:8px;margin:10px 0}
+.ex{background:#f0fdf4;border-left:4px solid #16a34a;padding:10px 14px;border-radius:8px;margin:12px 0}
+.note{color:#475569;font-size:14px;background:#f8fafc;padding:6px 10px;border-radius:8px}.small{font-size:13px}
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}.fig{max-width:100%;height:auto;color:#0f172a}.figwrap{margin:8px 0}
+.vid{margin:6px 0 14px}.vwrap{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;max-width:720px}.vwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}.vcap{font-size:13px;color:var(--mut);margin-top:4px}
+.sol{border:1px dashed #94a3b8;border-radius:10px;padding:10px 12px;margin:8px 0;background:#fff}.sl{margin:6px 0}.dl{overflow-x:auto}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:99px;margin-right:6px;color:#fff}.t1{background:#4f46e5}.t2{background:#d97706}.t3{background:#0891b2}.t4{background:#334155}.t5{background:#16a34a}
+.ansline{font-weight:700;color:var(--good);margin-top:6px}
+.lnav{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.meta{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}.stem{font-size:17px;margin:6px 0 10px}
+.step{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}.sp{font-weight:600;margin-bottom:6px}
+.choices{display:flex;flex-direction:column;gap:6px}.ch{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:15px}.ch:hover:not(:disabled){border-color:var(--acc)}
+.ch.right{border-color:#16a34a;background:#f0fdf4}.ch.wrong{border-color:#dc2626;background:#fef2f2}.ch.nope{opacity:.85}.ch.mc{display:block}
+.why{font-size:13px;color:#166534;margin-top:3px}.why.miss{color:#b91c1c}
+.good{color:var(--good);background:#f0fdf4;padding:6px 10px;border-radius:8px;margin:6px 0}.bad{color:var(--bad);background:#fef2f2;padding:6px 10px;border-radius:8px;margin:6px 0}.warn{color:#92400e;background:#fffbeb;padding:6px 10px;border-radius:8px}
+.numrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.num{font-size:17px;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;width:220px}
+.after{margin-top:8px}.pill{display:inline-flex;gap:4px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:3px 10px;margin:3px;background:#fff;font-size:14px}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}select{font-size:15px;padding:6px;border-radius:8px;border:1px solid var(--line)}
+#timer{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}#timer.low{color:#dc2626}
+.rev summary{cursor:pointer;font-weight:700}.okr summary{color:var(--good)}.badr summary{color:var(--bad)}
+.mrow{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.tagt{font-size:12px;background:#eef2ff;color:var(--acc);padding:1px 8px;border-radius:99px}
+.prow{display:grid;grid-template-columns:170px 1fr 120px;gap:8px;align-items:center;margin:4px 0;font-size:14px}.bar{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden}.bar div{height:100%}
+.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.cc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;line-height:2}.cc h4{margin:0 0 4px;color:var(--acc)}
+.plan td:first-child{white-space:nowrap;font-weight:700}
+.hero{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}@media(max-width:800px){.hero{grid-template-columns:1fr}}
+@media print{nav,header,.btn{display:none}}
+</style></head>
+<body>
+<header><h1>AP Physics C: Mech · Test Lab (Forces, Circles &amp; Energy)</h1><div class="sub">Built for Aryan, from Ms. Lee's Canvas: Problem Sets 13–19, Daily Quizzes 15 &amp; 17, the Energy Lab Exercises, and the Pivot labs since Exam 1.</div><div id="count"></div></header>
+<nav><button class="tab" data-t="home">Home</button><button class="tab" data-t="learn">1 · Learn</button><button class="tab" data-t="practice">2 · Practice</button><button class="tab" data-t="test">3 · Timed Test</button><button class="tab" data-t="mistakes">Mistakes</button><button class="tab" data-t="cheat">Cheat sheet</button></nav>
+<main>
+<section class="pane" id="p-home">
+ <div class="hero">
+ <div class="card"><h2>How this works</h2>
+  <p>You said you kind of get FBDs and energy charts, but you don't know how to <b>get the equations</b>. Everything here is built around that one skill:</p>
+  <p class="big"><b>Draw the picture → every arrow/bar becomes one term → solve in symbols → plug in numbers last.</b></p>
+  <ol><li><b>Learn</b> (no problems): short video + the recipe + one fully worked example per concept. Copy the purple recipe boxes into your notebook.</li>
+  <li><b>Practice</b> (endless, new numbers every time): <b>Guided mode</b> walks you through each problem: pick the forces for the FBD, pick the right equation, then type the number. Every wrong choice tells you <i>why</i> it's wrong. Switch to <b>Quick mode</b> once you can do it alone.</li>
+  <li><b>Timed test</b>: 19 mixed questions, a timer, lock-in with no going back, then a full key with the work.</li>
+  <li><b>Mistakes</b>: everything you miss is saved here so you can redo it until you get it right.</li></ol>
+  <button class="btn" data-go="learn" data-lesson="L0">Start with Lesson 0 →</button></div>
+ <div class="card"><h2>Your progress</h2><div id="progress"></div></div>
+ </div>
+ <div class="card"><h2>Plan: Mon → Wed</h2>
+ <table class="tbl plan">
+ <tr><td>Mon (today)</td><td><b>Learn 0–5</b> (method, FBDs, FBD→equations, inclines, pulleys, circles). Watch each video and copy the recipe boxes. Then <b>Practice</b> with only <i>Forces</i> + <i>Circular</i> checked, in Guided mode, until you get 5 in a row. ~2 hrs</td></tr>
+ <tr><td>Tue</td><td><b>Learn 6–11</b> (drag, work, KE, bar charts, springs, U(x)). Then <b>Practice</b> energy/work/springs in Guided mode, then <b>all topics in Quick mode</b>. Office hours have been Tue 3–5 PM (as of Ms. Lee's Nov 9 post). Bring anything that's still confusing.</td></tr>
+ <tr><td>Tue night</td><td><b>Timed Test</b> (45 min). Then go through <b>Mistakes</b> until the list is empty. If there's time, take a 2nd test.</td></tr>
+ <tr><td>Wed morning</td><td>Read the <b>Cheat sheet</b> + Lesson 0. Redo any leftover Mistakes. Bring a pencil, eraser, calculator (in DEGREES), and a ruler.</td></tr></table>
+ <p class="note">Canvas doesn't list this test's topics, so this covers everything since Exam 1: Newton's laws &amp; FBDs (Ch 5–7), circular motion (Ch 8 / PS13–15), drag (PS14), work &amp; energy (PS18–19, DQ17, Energy Lab), and springs (Spring Constant lab). If Ms. Lee said the test is only part of this, uncheck the other topics in Practice. g = 9.8 m/s² everywhere.</p></div>
+</section>
+
+<section class="pane" id="p-learn" hidden><div class="learn"><div id="lessonList"></div><div id="lessonView"></div></div></section>
+
+<section class="pane" id="p-practice" hidden>
+ <div class="card"><div class="ctrl"><b>Topics:</b> <span id="topicPick"></span></div>
+ <div class="ctrl" style="margin-top:8px"><label>Mode <select id="mode"><option value="guided">Guided (step-by-step)</option><option value="quick">Quick (just the answer)</option></select></label>
+ <label>Type <select id="kind"><option value="mix">Mixed</option><option value="gen">Number problems</option><option value="concept">Concept checks</option><option value="deriv">Derivations (symbols)</option></select></label>
+ <button class="btn" id="nextP">Next question →</button></div>
+ <div class="note small" style="margin-top:8px">Answers within 2% count. You can type 2.9e4 for 2.9 × 10⁴. Work on paper the way you would on the test, then check here.</div></div>
+ <div id="practiceHost"></div>
+</section>
+
+<section class="pane" id="p-test" hidden>
+ <div id="testSetup" class="card"><h2>Timed practice test</h2><p><b>19 questions:</b> 11 number problems (forces 3, circles 2, drag 1, energy 2, work 1, springs 1, U(x) 1), 6 concept checks, and 2 derivations. Every test uses new numbers. Answers lock in, with no going back. You get the full key with all the work at the end, and misses go to Mistakes.</p>
+ <label>Time limit <select id="tmins"><option>30</option><option selected>45</option><option>60</option><option>90</option></select> minutes</label> <button class="btn" id="startTest">Start test</button></div>
+ <div id="testRun" hidden><div class="card ctrl" style="justify-content:space-between"><span id="tprog"></span><span id="timer">--:--</span><button class="btn ghost small" id="quitTest">End &amp; grade now</button></div><div id="testQ"></div></div>
+ <div id="testResult" hidden></div>
+</section>
+
+<section class="pane" id="p-mistakes" hidden><div id="mList"></div><div id="mHost"></div></section>
+<section class="pane" id="p-cheat" hidden><div class="card"><h2>Cheat sheet (Wednesday morning review)</h2><p class="note">These are things to <b>derive from</b>, not memorize blindly. Start every answer from one of these principles.</p><div id="cheatHost"></div></div></section>
+</main>
+<script src="core.js"></script><script src="gens.js"></script><script src="concepts.js"></script><script src="lessons.js"></script>
+<script>(function(){let started=false;function go(){if(started)return;started=true;const s=document.createElement('script');s.src='app.js';document.body.appendChild(s);}
+function wait(n){if(window.renderMathInElement||n>40)go();else setTimeout(()=>wait(n+1),150);}
+if(document.readyState==='complete')wait(0);else window.addEventListener('load',()=>wait(0));})();</script>
+</body></html>
