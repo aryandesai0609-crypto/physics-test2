@@ -1,5 +1,5 @@
 // ===== Learn lessons =====
-const yt=(id,title,ch,len)=>`<div class="vid"><div class="vwrap"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="${title}" loading="lazy" allowfullscreen allow="accelerometer; encrypted-media; picture-in-picture"></iframe></div><div class="vcap">▶ ${title} · ${ch} · ${len} · <a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">open on YouTube</a></div></div>`;
+const yt=(id,title,ch,len)=>`<div class="vid"><div class="vwrap"><iframe referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="${title}" allowfullscreen allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe></div><div class="vcap">▶ ${title} · ${ch} · ${len} · <a href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">open on YouTube</a></div></div>`;
 const LESSONS=[
 {id:'L0',topic:'method',title:'0. How to "get the equations" (read this first)',body:L`
 <p class="big">Physics problems feel impossible when you stare at them and try to remember a formula. Ms. Lee's tests don't work that way. You <b>build</b> the equation from one starting principle every time. There are only a few starting principles in this unit.</p>
