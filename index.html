@@ -47,47 +47,56 @@ h2{margin:.2em 0 .5em}h3{margin:1.2em 0 .4em}
 .cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.cc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;line-height:2}.cc h4{margin:0 0 4px;color:var(--acc)}
 .plan td:first-child{white-space:nowrap;font-weight:700}
 .hero{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}@media(max-width:800px){.hero{grid-template-columns:1fr}}
+.bsubs{display:flex;gap:6px;flex-wrap:wrap}.bsub{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font-weight:600;cursor:pointer}.bsub.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}.fcard{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}.fcard.known{border-color:#16a34a;background:#f0fdf4}.fcard.unsure{border-color:#dc2626;background:#fef2f2}.fq{font-weight:600;margin-bottom:6px}.fa{margin:6px 0}.fbtns{display:flex;gap:6px;margin-top:8px}
+.bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}@media(max-width:700px){.bgrid{grid-template-columns:repeat(2,1fr)}}.bk{display:flex;flex-direction:column;gap:4px;border:1.5px solid var(--line);border-radius:10px;padding:8px;font-size:14px}
+.okrow{background:#f0fdf4;border-color:#16a34a!important}.badrow{background:#fef2f2;border-color:#dc2626!important}.fbdt select{font-size:14px}.fwhy{font-size:13px}
+.fpart{border-top:1px solid var(--line);padding:10px 0}.pts{color:#7c3aed;font-weight:700;font-size:13px}.fsol{margin-top:8px}.solbox{background:#f8fafc;border-radius:10px;padding:8px 12px;margin-bottom:8px}.rub{background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:8px 12px}.rpt{display:block;margin:4px 0}.fscore{margin-top:10px}
+.tbl.data{width:auto}.tbl.data td{text-align:center}.frqlay{display:grid;grid-template-columns:260px 1fr;gap:16px}@media(max-width:800px){.frqlay{grid-template-columns:1fr}}#frqList{display:flex;flex-direction:column;gap:4px;align-self:start;position:sticky;top:60px}
 @media print{nav,header,.btn{display:none}}
 </style></head>
 <body>
 <header><h1>AP Physics C: Mech · Test Lab (Forces, Circles &amp; Energy)</h1><div class="sub">Built for Aryan, from Ms. Lee's Canvas: Problem Sets 13–19, Daily Quizzes 15 &amp; 17, the Energy Lab Exercises, and the Pivot labs since Exam 1.</div><div id="count"></div></header>
-<nav><button class="tab" data-t="home">Home</button><button class="tab" data-t="learn">1 · Learn</button><button class="tab" data-t="practice">2 · Practice</button><button class="tab" data-t="test">3 · Timed Test</button><button class="tab" data-t="mistakes">Mistakes</button><button class="tab" data-t="cheat">Cheat sheet</button></nav>
+<nav><button class="tab" data-t="home">Home</button><button class="tab" data-t="basics">0 · Basics</button><button class="tab" data-t="learn">1 · Learn</button><button class="tab" data-t="practice">2 · Practice</button><button class="tab" data-t="frq">3 · FRQs</button><button class="tab" data-t="test">4 · Exam Sim (90 min)</button><button class="tab" data-t="mistakes">Mistakes</button><button class="tab" data-t="cheat">Cheat sheet</button></nav>
 <main>
 <section class="pane" id="p-home">
  <div class="hero">
  <div class="card"><h2>How this works</h2>
   <p>You said you kind of get FBDs and energy charts, but you don't know how to <b>get the equations</b>. Everything here is built around that one skill:</p>
   <p class="big"><b>Draw the picture → every arrow/bar becomes one term → solve in symbols → plug in numbers last.</b></p>
-  <ol><li><b>Learn</b> (no problems): short video + the recipe + one fully worked example per concept. Copy the purple recipe boxes into your notebook.</li>
-  <li><b>Practice</b> (endless, new numbers every time): <b>Guided mode</b> walks you through each problem: pick the forces for the FBD, pick the right equation, then type the number. Every wrong choice tells you <i>why</i> it's wrong. Switch to <b>Quick mode</b> once you can do it alone.</li>
-  <li><b>Timed test</b>: 19 mixed questions, a timer, lock-in with no going back, then a full key with the work.</li>
-  <li><b>Mistakes</b>: everything you miss is saved here so you can redo it until you get it right.</li></ol>
-  <button class="btn" data-go="learn" data-lesson="L0">Start with Lesson 0 →</button></div>
+  <ol><li><b>Basics</b>: the base knowledge drilled until it's automatic: must-know facts (free fall, when N = mg, when energy is conserved…), "which principle do I use?", true/false, an <b>FBD builder</b>, and an <b>energy bar chart builder</b>.</li>
+  <li><b>Learn</b> (no problems): short video + recipe + fully worked example for each concept, plus how to do lab and graph FRQs.</li>
+  <li><b>Practice</b> (endless, new numbers): Guided mode walks you through the FBD/bar chart → equation → number, and every wrong choice tells you why. Then Quick mode, then ★ Hard.</li>
+  <li><b>FRQs</b>: 10 long AP/MIT-style problems with lab data, graphs, and derivations, graded with a point rubric.</li>
+  <li><b>Exam Sim</b>: 90 minutes like the real test: 12 short + 2 FRQs, timed, no going back.</li>
+  <li><b>Mistakes</b>: everything you miss, until you get it right.</li></ol>
+  <button class="btn" data-go="basics">Start with Basics →</button> <button class="btn ghost" data-go="learn" data-lesson="L0">Lesson 0: how to get the equations</button></div>
  <div class="card"><h2>Your progress</h2><div id="progress"></div></div>
  </div>
  <div class="card"><h2>Plan: Mon → Wed</h2>
  <table class="tbl plan">
- <tr><td>Mon (today)</td><td><b>Learn 0–5</b> (method, FBDs, FBD→equations, inclines, pulleys, circles). Watch each video and copy the recipe boxes. Then <b>Practice</b> with only <i>Forces</i> + <i>Circular</i> checked, in Guided mode, until you get 5 in a row. ~2 hrs</td></tr>
- <tr><td>Tue</td><td><b>Learn 6–11</b> (drag, work, KE, bar charts, springs, U(x)). Then <b>Practice</b> energy/work/springs in Guided mode, then <b>all topics in Quick mode</b>. Office hours have been Tue 3–5 PM (as of Ms. Lee's Nov 9 post). Bring anything that's still confusing.</td></tr>
- <tr><td>Tue night</td><td><b>Timed Test</b> (45 min). Then go through <b>Mistakes</b> until the list is empty. If there's time, take a 2nd test.</td></tr>
- <tr><td>Wed morning</td><td>Read the <b>Cheat sheet</b> + Lesson 0. Redo any leftover Mistakes. Bring a pencil, eraser, calculator (in DEGREES), and a ruler.</td></tr></table>
- <p class="note">Canvas doesn't list this test's topics, so this covers everything since Exam 1: Newton's laws &amp; FBDs (Ch 5–7), circular motion (Ch 8 / PS13–15), drag (PS14), work &amp; energy (PS18–19, DQ17, Energy Lab), and springs (Spring Constant lab). If Ms. Lee said the test is only part of this, uncheck the other topics in Practice. g = 9.8 m/s² everywhere.</p></div>
+ <tr><td>Mon (today): base knowledge</td><td>1) <b>Lesson 0</b> (how to get the equations, 10 min).<br>2) <b>Basics</b>: Must-know facts (mark all 43), then "Which principle?" and True/False until ~90%.<br>3) <b>Learn 1–11</b>: watch each video and copy the purple recipe boxes. After lessons 1–5 do 5 rounds of the <b>FBD builder</b>; after lessons 7–10 do 5 rounds of the <b>Bar chart builder</b>.<br>4) <b>Lesson 12</b> (lab and graph FRQs).<br>5) If there's time: Practice in <b>Guided</b> mode, all topics, ~10 problems. ~3 hrs</td></tr>
+ <tr><td>Tue: practice</td><td>1) Practice <b>Guided → Quick</b>, all topics (~25 problems), then 8–10 <b>★ Hard</b>.<br>2) <b>FRQs</b>: do 4 of them on paper (at least one lab, one graph, one calculus), grade with the rubric.<br>3) Office hours have been Tue 3–5 PM (Ms. Lee's Nov 9 post); bring your worst FRQ.<br>4) Tonight: <b>Exam Sim (90 min)</b> in one sitting, then clear <b>Mistakes</b>.</td></tr>
+ <tr><td>Wed morning</td><td>Cheat sheet + Basics facts marked ✗ + 1 FRQ you haven't done. Bring a pencil, eraser, calculator (in DEGREES), and a ruler for graphs.</td></tr></table>
+ <p class="note">Canvas doesn't list this test's topics, so this covers everything since Exam 1 (plus the kinematics/free-fall fundamentals from the DQ15 Fundamentals Check): Newton's laws &amp; FBDs (Ch 5–7), circular motion (Ch 8 / PS13–15), drag (PS14), work &amp; energy (PS18–19, DQ17, Energy Lab), and springs (Spring Constant lab). If Ms. Lee said the test is only part of this, uncheck the other topics in Practice. g = 9.8 m/s² everywhere.</p></div>
 </section>
 
+<section class="pane" id="p-basics" hidden><div class="card"><h2>0 · Basics: know these cold before practicing</h2><p>This is the base knowledge: what's true when (free fall, equilibrium, N = mg?), which principle to start with, and how to draw FBDs and energy bar charts correctly. Do each drill until you get about 90%.</p><div class="bsubs"><button class="bsub" data-k="facts">1. Must-know facts</button><button class="bsub" data-k="method">2. Which principle?</button><button class="bsub" data-k="tf">3. True / False</button><button class="bsub" data-k="fbd">4. FBD builder</button><button class="bsub" data-k="bars">5. Bar chart builder</button></div><div id="bStats" class="note small" style="margin-top:8px"></div></div><div id="bHost"></div></section>
+<section class="pane" id="p-frq" hidden><div class="card"><h2>3 · FRQs (AP/MIT style, made harder)</h2><p>10 full free-response problems, 15 points each: lab data you graph and linearize, F-x / U-x / v-t graphs, calculus derivations, and "justify" paragraphs. Do each part on paper FIRST, then click "Show answer + rubric" and tick the points you earned. Aim for about 20–25 min per FRQ.</p></div><div class="frqlay"><div id="frqList"></div><div id="frqView"><div class="card">← Pick an FRQ. Start with any one you haven't done.</div></div></div></section>
 <section class="pane" id="p-learn" hidden><div class="learn"><div id="lessonList"></div><div id="lessonView"></div></div></section>
 
 <section class="pane" id="p-practice" hidden>
  <div class="card"><div class="ctrl"><b>Topics:</b> <span id="topicPick"></span></div>
  <div class="ctrl" style="margin-top:8px"><label>Mode <select id="mode"><option value="guided">Guided (step-by-step)</option><option value="quick">Quick (just the answer)</option></select></label>
- <label>Type <select id="kind"><option value="mix">Mixed</option><option value="gen">Number problems</option><option value="concept">Concept checks</option><option value="deriv">Derivations (symbols)</option></select></label>
+ <label>Type <select id="kind"><option value="mix">Mixed</option><option value="gen">Number problems</option><option value="concept">Concept checks</option><option value="deriv">Derivations (symbols)</option><option value="hard">★ Hard (multi-concept) only</option></select></label>
  <button class="btn" id="nextP">Next question →</button></div>
  <div class="note small" style="margin-top:8px">Answers within 2% count. You can type 2.9e4 for 2.9 × 10⁴. Work on paper the way you would on the test, then check here.</div></div>
  <div id="practiceHost"></div>
 </section>
 
 <section class="pane" id="p-test" hidden>
- <div id="testSetup" class="card"><h2>Timed practice test</h2><p><b>19 questions:</b> 11 number problems (forces 3, circles 2, drag 1, energy 2, work 1, springs 1, U(x) 1), 6 concept checks, and 2 derivations. Every test uses new numbers. Answers lock in, with no going back. You get the full key with all the work at the end, and misses go to Mistakes.</p>
- <label>Time limit <select id="tmins"><option>30</option><option selected>45</option><option>60</option><option>90</option></select> minutes</label> <button class="btn" id="startTest">Start test</button></div>
+ <div id="testSetup" class="card"><h2>Exam simulation (like the real 90-minute test)</h2><p><b>Section I</b>: 12 questions (8 number problems, at least 3 of them ★ hard multi-concept, plus 4 concept checks). Answers lock in, no going back.<br><b>Section II</b>: 2 full FRQs (15 pts each, from different topics, with graphs/lab data/derivations). Work on paper, then grade yourself with the rubric at the end.</p><p class="note">Pacing: about 40 min on Section I, about 25 min per FRQ. Every sim uses new numbers and a different FRQ pair.</p>
+ <label>Time limit <select id="tmins"><option>60</option><option>75</option><option selected>90</option><option>120</option></select> minutes</label> <button class="btn" id="startTest">Start exam sim</button></div>
  <div id="testRun" hidden><div class="card ctrl" style="justify-content:space-between"><span id="tprog"></span><span id="timer">--:--</span><button class="btn ghost small" id="quitTest">End &amp; grade now</button></div><div id="testQ"></div></div>
  <div id="testResult" hidden></div>
 </section>
@@ -95,7 +104,7 @@ h2{margin:.2em 0 .5em}h3{margin:1.2em 0 .4em}
 <section class="pane" id="p-mistakes" hidden><div id="mList"></div><div id="mHost"></div></section>
 <section class="pane" id="p-cheat" hidden><div class="card"><h2>Cheat sheet (Wednesday morning review)</h2><p class="note">These are things to <b>derive from</b>, not memorize blindly. Start every answer from one of these principles.</p><div id="cheatHost"></div></div></section>
 </main>
-<script src="core.js"></script><script src="gens.js"></script><script src="concepts.js"></script><script src="lessons.js"></script>
+<script src="core.js"></script><script src="gens.js"></script><script src="concepts.js"></script><script src="basics.js"></script><script src="frq.js"></script><script src="lessons.js"></script>
 <script>(function(){let started=false;function go(){if(started)return;started=true;const s=document.createElement('script');s.src='app.js';document.body.appendChild(s);}
 function wait(n){if(window.renderMathInElement||n>40)go();else setTimeout(()=>wait(n+1),150);}
 if(document.readyState==='complete')wait(0);else window.addEventListener('load',()=>wait(0));})();</script>

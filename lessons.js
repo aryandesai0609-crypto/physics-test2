@@ -183,6 +183,31 @@ ${yt('qpiYSNLZ3Z0','Conservative Force and Potential Energy','Flipping Physics',
 <li>Chain rule shows up (Ms. Lee said to review it): e.g. \(U=A\cos(kx)\Rightarrow F=Ak\sin(kx)\); \(U=\dfrac{-GMm}{r}\Rightarrow F=-\dfrac{GMm}{r^2}\).</li></ul>
 <div class="ex">${sceneUgraph(1,12)}<br>\(U=x^3-12x\): \(F=-(3x^2-12)\). Equilibrium at \(x=2\) (a minimum, so stable). At x = 1: F = +9 N (pushes right, downhill toward the valley).</div>
 `},
+{id:'L12',topic:'method',title:'12. Lab & graph FRQs (how Ms. Lee makes them harder)',body:L`
+<p class="big">Lab FRQs always follow the same pattern: <b>derive the equation → linearize → graph → best-fit slope → use the slope's meaning</b>. Graph FRQs test whether you know what slopes and areas mean.</p>
+<h3>A. Linearize: turn your equation into y = (slope)·x + b</h3>
+<div class="recipe"><ol><li>Derive the relationship in symbols (from Newton or energy).</li><li>Put the thing you MEASURED that changes on the y-axis and the thing you CONTROLLED on the x-axis, transformed so the relationship is a straight line.</li><li>Everything left over that multiplies x is the slope. Write "slope = …" in symbols.</li><li>Solve the slope expression for the quantity they want.</li></ol></div>
+<table class="tbl"><tr><th>Lab</th><th>Equation</th><th>Graph</th><th>Slope means</th></tr>
+<tr><td>Spring constant (hanging masses)</td><td>\(mg=kx\)</td><td>mg vs x</td><td>k</td></tr>
+<tr><td>Cart down a ramp (from rest)</td><td>\(v^2=2gh\)</td><td>v² vs h</td><td>2g</td></tr>
+<tr><td>Spring launcher</td><td>\(v=x\sqrt{k/m}\)</td><td>v vs x</td><td>\(\sqrt{k/m}\)</td></tr>
+<tr><td>Coffee filters, quadratic drag</td><td>\(nm_0g=cv_T^2\)</td><td>v_T² vs n</td><td>\(m_0g/c\)</td></tr>
+<tr><td>Modified Atwood (total mass fixed)</td><td>\(a=\frac{g(1+\mu)}{M}m-\mu g\)</td><td>a vs m</td><td>slope \(g(1+\mu)/M\), intercept \(-\mu g\)</td></tr>
+<tr><td>Conical pendulum</td><td>\(P^2=\frac{4\pi^2}{g}L\cos\theta\)</td><td>P² vs L cos θ</td><td>\(4\pi^2/g\)</td></tr>
+<tr><td>Circle at constant v</td><td>\(F=mv^2\cdot\frac1r\)</td><td>F vs 1/r</td><td>\(mv^2\)</td></tr>
+<tr><td>Force sensor at the top of a loop</td><td>\(N=\frac{2mg}{R}h-5mg\)</td><td>N vs h</td><td>\(2mg/R\)</td></tr></table>
+<h3>B. Best-fit line rules (easy points people lose)</h3>
+<ul><li>Label both axes WITH units, and use most of the grid (pick a good scale).</li><li>Draw ONE straight line that balances the points. Don't connect the dots, and don't force it through the origin unless the physics says so.</li><li>Find the slope with two points <b>on your line</b> that are far apart (not data points). Show \(\frac{\Delta y}{\Delta x}\) with units.</li><li>A non-zero intercept means something physical (friction, an offset, a measurement error). Say what!</li></ul>
+<div class="ex"><b>Example (Spring Constant Challenge):</b> masses 0.05–0.25 kg stretch the spring 0.021–0.101 m.
+${plotSVG({w:380,h:260,xr:[0,0.12],yr:[0,3],xs:0.02,ys:0.5,xl:'x (m)',yl:'mg (N)',pts:[[0.021,0.49],[0.039,0.98],[0.061,1.47],[0.079,1.96],[0.101,2.45]],fns:[{f:x=>24.47*x-0.003,color:'#2563eb'}]})}
+Points on the line: (0.020, 0.486) and (0.100, 2.444) → slope \(=\frac{2.444-0.486}{0.100-0.020}=24.5\text{ N/m}=k\).</div>
+<h3>C. Sketching graphs (v-t, x-t, K-x, F-x, U-x)</h3>
+<div class="recipe"><ol><li>Mark the starting value and any value they give you (label it on the axis).</li><li>Slope tells the shape: slope of x-t = v, of v-t = a, of K-x = net force, of U-x = −F.</li><li>Constant force → straight line in v-t; force growing with x → K-x curves up; drag → exponential approach to an <b>asymptote</b> (draw it dashed and label it, e.g. \(v_T=mg/b\)).</li><li>Show where the graph is steepest/flattest, and where it peaks (where the slope = 0, e.g. max speed where F = 0).</li></ol></div>
+<h3>D. "Justify" / paragraph answers</h3>
+<p>Name the principle → say what changes and why (cause → effect) → give the answer. Use the equation you derived as evidence: "Since \(v=x\sqrt{k/m}\), doubling k multiplies v by \(\sqrt2\), so it does NOT double."</p>
+<h3>E. "Why is the measured value different?"</h3>
+<p>Name a specific cause, say which way it pushes the result, and connect it to energy or forces. Example: friction turns some energy into thermal energy (ΔE_th), so the measured speed is LOWER than predicted. Saying "human error" gets zero points.</p>
+`},
 ];
 const CHEAT=L`
 <div class="cheat">

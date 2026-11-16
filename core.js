@@ -146,11 +146,12 @@ function sceneConical(th){
   </svg>`;
 }
 function sceneBank(th){
+  const base=Math.min(240,100/Tn(th)),x0=260-base;
   return `<svg class="fig" viewBox="0 0 280 150" width="280" height="150">
-  <polygon points="20,130 260,130 260,${130-240*Tn(th)}" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
-  <g transform="translate(150 ${130-130*Tn(th)}) rotate(${-th})"><rect x="-26" y="-22" width="52" height="22" rx="5" fill="#93c5fd" stroke="#1e3a8a"/></g>
-  ${txt(60,124,th+'°',13,'#334155','start','font-style="normal"')}
-  ${txt(30,22,'center of the curve ←',12,'#64748b','start','font-style="normal"')}
+  <polygon points="${x0},130 260,130 260,${130-base*Tn(th)}" fill="#e2e8f0" stroke="#475569" stroke-width="2"/>
+  <g transform="translate(${x0+base*0.55} ${130-base*0.55*Tn(th)}) rotate(${-th})"><rect x="-26" y="-22" width="52" height="22" rx="5" fill="#93c5fd" stroke="#1e3a8a"/></g>
+  ${txt(x0+40,124,th+'°',13,'#334155','start','font-style="normal"')}
+  ${txt(10,22,'center of the curve ←',12,'#64748b','start','font-style="normal"')}
   </svg>`;
 }
 function sceneSpring(){

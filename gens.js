@@ -589,5 +589,117 @@ const GENS = [
   final:{prompt:L`\(P_{avg}=\dfrac{\tfrac12mv^2}{t}\) (W):`,ans:P,unit:'W'},
   solution:sol({principle:L`Work-energy theorem + \(P=W/t\)`,constraint:'Starts from rest',assume:'No friction or drag',lines:[L`W=\Delta K=\tfrac12mv^2`,L`P=\dfrac{\tfrac12mv^2}{t}`],plug:L`P=\dfrac{\tfrac12(${m})(${v})^2}{${t}}=${fmt(P)}\text{ W}`,ans:L`${fmt(P)}\text{ W}`})};
 }},
+// ---------------- HARD (multi-concept) ----------------
+{id:'H1',topic:'forces',hard:true,name:'★ Block on a rough incline pulled up by a hanging mass',gen(R){
+  let m1,m2,th,mu,a;for(let i=0;i<80;i++){m1=R.int(2,8);m2=R.int(2,9);th=R.pick([20,25,30,35]);mu=R.step(0.1,0.3,0.05);a=(m2*G-m1*G*S(th)-mu*m1*G*C(th))/(m1+m2);if(a>0.4)break;}
+  const T=m2*(G-a);const askT=R.f()<0.5;
+  return {stem:L`A \(${m1}\text{ kg}\) block sits on a \(${th}^\circ\) incline (\(\mu_k=${mu}\)). A string runs from it UP the slope, over a pulley at the top, to a hanging \(${m2}\text{ kg}\) mass, which falls. Find ${askT?'the string tension':'the acceleration'}.`,
+  steps:[
+   {kind:'multi',prompt:'Step 1: Forces on the INCLINE block (it slides UP the slope):',options:[
+     {t:L`Gravity \(m_1g\) straight down`,ok:true,why:'Always.'},{t:'Normal force, perpendicular to the ramp',ok:true,why:'From the ramp surface.'},
+     {t:'Tension, up the slope',ok:true,why:'The string pulls it toward the pulley.'},{t:'Kinetic friction, DOWN the slope',ok:true,why:'It slides up, so friction points down the slope.'},
+     {t:'Kinetic friction, up the slope',ok:false,why:'Friction opposes the sliding, which is UP here.'},{t:L`The hanging weight \(m_2g\)`,ok:false,why:'That acts on the hanging mass. It reaches this block only through T.'}],
+    after:fbdSVG([{deg:270,len:70,label:'m₁g',color:COL.g},{deg:90+th,len:55,label:'N',color:COL.N},{deg:th,len:75,label:'T',color:COL.T},{deg:180+th,len:40,label:'fk',color:COL.f}],{tilt:th})},
+   {kind:'mc',prompt:'Step 2: System along the string (hanging mass falling = +). Net force?',choices:[
+     {t:L`\(m_2g-m_1g\sin\theta-\mu_km_1g\cos\theta\)`,ok:true,why:'The hanging weight drives it. The down-slope part of m₁g and friction both resist.'},
+     {t:L`\(m_2g-m_1g-\mu_km_1g\)`,ok:false,why:'On the incline only m₁g sinθ resists along the string, and N = m₁g cosθ.'},
+     {t:L`\(m_2g-m_1g\sin\theta+\mu_km_1g\cos\theta\)`,ok:false,why:'Friction resists the motion, so it subtracts.'}]}],
+  final:{prompt:askT?L`\(a\) from the system, then \(T=m_2(g-a)\) (N):`:L`\(a=\dfrac{m_2g-m_1g(\sin\theta+\mu_k\cos\theta)}{m_1+m_2}\) (m/s²):`,ans:askT?T:a,unit:askT?'N':'m/s²'},
+  solution:sol({principle:'Newton\'s 2nd law (system, then one object)',constraint:'Same |a| for both; m₁ slides up so friction is down-slope',assume:'Massless string, frictionless pulley',
+    lines:[L`(m_1+m_2)a=m_2g-m_1g\sin\theta-\mu_km_1g\cos\theta`,L`T=m_2(g-a)`],plug:L`a=\dfrac{${m2}(9.8)-${m1}(9.8)(\sin${th}^\circ+${mu}\cos${th}^\circ)}{${m1+m2}}=${fmt(a)},\ T=${fmt(T)}\text{ N}`,ans:askT?L`${fmt(T)}\text{ N}`:L`${fmt(a)}\ \text{m/s}^2`})};
+}},
+{id:'H2',topic:'forces',hard:true,name:'★ Stacked blocks: max force before slipping',gen(R){
+  const m1=R.pick([0.5,1,1.5,2]),m2=R.pick([2,3,4,5]),mu=R.pick([0.3,0.4,0.5,0.6]);const F=(m1+m2)*mu*G;
+  return {stem:L`Block 1 (\(${m1}\text{ kg}\)) rests on block 2 (\(${m2}\text{ kg}\)) on a frictionless floor. \(\mu_s=${mu}\) between the blocks. A horizontal force F pulls block 2. What is the MAXIMUM F so the blocks don't slip?`,
+  steps:[
+   {kind:'mc',prompt:'Step 1: What accelerates the TOP block?',choices:[
+     {t:'Static friction from block 2, pointing forward',ok:true,why:'It\'s the only horizontal force on block 1, so it must point in the direction block 1 accelerates.'},
+     {t:'The force F',ok:false,why:'F touches only block 2.'},
+     {t:'Nothing; it just rides along',ok:false,why:'To speed up it needs a net force.'}]},
+   {kind:'mc',prompt:'Step 2: The largest acceleration the top block can have:',choices:[
+     {t:L`\(a_{max}=\mu_sg\)`,ok:true,why:L`\(\mu_sm_1g=m_1a\). Mass cancels.`},
+     {t:L`\(a_{max}=\mu_s g\,\dfrac{m_1}{m_2}\)`,ok:false,why:'Apply Newton to block 1 alone: friction μₛm₁g = m₁a.'},
+     {t:L`\(a_{max}=g\)`,ok:false,why:'Static friction is limited to μₛN.'}]},
+   {kind:'mc',prompt:'Step 3: Then F for the whole system:',choices:[
+     {t:L`\(F=(m_1+m_2)a_{max}\)`,ok:true,why:'Moving together, the system has total mass m₁+m₂ and F is the only external horizontal force.'},
+     {t:L`\(F=m_2a_{max}\)`,ok:false,why:'F accelerates both blocks together.'},
+     {t:L`\(F=\mu_sm_1g\)`,ok:false,why:'That\'s just the friction on block 1.'}]}],
+  final:{prompt:L`\(F_{max}=(m_1+m_2)\mu_sg\) (N):`,ans:F,unit:'N'},
+  solution:sol({principle:'Newton\'s 2nd law on the top block, then the system',constraint:L`Verge of slipping: \(f_s=\mu_sm_1g\)`,lines:[L`\mu_sm_1g=m_1a\Rightarrow a=\mu_sg`,L`F=(m_1+m_2)\mu_sg`],plug:L`F=(${m1+m2})(${mu})(9.8)=${fmt(F)}\text{ N}`,ans:L`${fmt(F)}\text{ N}`})};
+}},
+{id:'H3',topic:'circular',hard:true,name:'★ Banked curve WITH friction: max speed',gen(R){
+  let th,mu;do{th=R.pick([10,15,20,25,30]);mu=R.pick([0.1,0.2,0.3,0.4,0.5]);}while(C(th)-mu*S(th)<=0.2);
+  const r=R.pick([50,80,100,150,200]);const v=Math.sqrt(r*G*(S(th)+mu*C(th))/(C(th)-mu*S(th)));
+  return {stem:L`A curve of radius \(${r}\text{ m}\) is banked at \(${th}^\circ\). \(\mu_s=${mu}\). What is the MAXIMUM speed a car can take the curve without sliding up/out?`,fig:sceneBank(th),
+  steps:[
+   {kind:'mc',prompt:'Step 1: At the max speed the car is about to slide OUT (up the bank). Which way does static friction point?',choices:[
+     {t:'Down the slope (toward the inside)',ok:true,why:'Friction opposes the slipping, which would be up and out.'},
+     {t:'Up the slope',ok:false,why:'That\'s for the MINIMUM speed (car about to slide down).'},
+     {t:'There\'s no friction on a banked curve',ok:false,why:'Banking reduces the friction needed, but at max speed friction helps.'}]},
+   {kind:'mc',prompt:'Step 2: Horizontal (toward center) and vertical equations:',choices:[
+     {t:L`\(N\sin\theta+\mu_sN\cos\theta=\dfrac{mv^2}{r},\quad N\cos\theta-\mu_sN\sin\theta=mg\)`,ok:true,why:'The down-slope friction has an inward part (μN cosθ) and a downward part (μN sinθ).'},
+     {t:L`\(N\sin\theta=\dfrac{mv^2}{r},\quad N\cos\theta=mg\)`,ok:false,why:'That\'s the no-friction design speed.'},
+     {t:L`\(N\sin\theta+\mu_sN\cos\theta=\dfrac{mv^2}{r},\quad N\cos\theta+\mu_sN\sin\theta=mg\)`,ok:false,why:'Friction pointing down the slope has a DOWNWARD vertical part, so it subtracts from the vertical support.'}]}],
+  final:{prompt:L`Divide: \(v^2=rg\,\dfrac{\sin\theta+\mu_s\cos\theta}{\cos\theta-\mu_s\sin\theta}\) (m/s):`,ans:v,unit:'m/s'},
+  solution:sol({principle:'Newton\'s 2nd law, horizontal (radial) and vertical axes',constraint:L`About to slip outward: \(f_s=\mu_sN\) down the slope`,assume:'Car as a point',lines:[L`N(\sin\theta+\mu_s\cos\theta)=\dfrac{mv^2}{r}`,L`N(\cos\theta-\mu_s\sin\theta)=mg`,L`v=\sqrt{rg\,\dfrac{\sin\theta+\mu_s\cos\theta}{\cos\theta-\mu_s\sin\theta}}`],plug:L`v=${fmt(v)}\text{ m/s}`,ans:L`${fmt(v)}\text{ m/s}`})};
+}},
+{id:'H4',topic:'circular',hard:true,name:'★ Pendulum: tension at ANY angle on the swing',gen(R){
+  const m=R.pick([0.2,0.5,1,2]),Lp=R.pick([0.5,1,1.5,2]),th0=R.pick([50,60,70,80]);const ph=R.pick([10,20,30,40].filter(p=>p<th0-5));
+  const v2=2*G*Lp*(C(ph)-C(th0));const T=m*G*C(ph)+m*v2/Lp;
+  return {stem:L`A \(${m}\text{ kg}\) bob on a \(${Lp}\text{ m}\) string is released from rest at \(${th0}^\circ\) from vertical. Find the tension when the string is at \(${ph}^\circ\) from vertical (on the way down).`,fig:scenePendulum(ph),
+  steps:[
+   {kind:'mc',prompt:'Step 1 (energy): speed at angle φ:',choices:[
+     {t:L`\(v^2=2gL(\cos\varphi-\cos\theta_0)\)`,ok:true,why:L`Height dropped = \(L\cos\varphi-L\cos\theta_0\).`},
+     {t:L`\(v^2=2gL(1-\cos\theta_0)\)`,ok:false,why:'That\'s the speed at the BOTTOM, not at φ.'},
+     {t:L`\(v^2=2gL(\cos\theta_0-\cos\varphi)\)`,ok:false,why:'That\'s negative. Lower down means cos φ is bigger.'}]},
+   {kind:'mc',prompt:'Step 2 (radial Newton at φ): the part of gravity along the string points AWAY from the center:',choices:[
+     {t:L`\(T-mg\cos\varphi=\dfrac{mv^2}{L}\)`,ok:true,why:'Toward the pivot = +. T is +, and the string-direction part of gravity (mg cosφ) points away.'},
+     {t:L`\(T-mg=\dfrac{mv^2}{L}\)`,ok:false,why:'Only at the bottom (φ = 0). Use the component along the string.'},
+     {t:L`\(T-mg\sin\varphi=\dfrac{mv^2}{L}\)`,ok:false,why:'mg sinφ is the TANGENTIAL part (it speeds the bob up). The radial part is mg cosφ.'}]}],
+  final:{prompt:L`\(T=mg(3\cos\varphi-2\cos\theta_0)\) (N):`,ans:T,unit:'N'},
+  solution:sol({principle:'Energy conservation + Newton radial',constraint:'Released from rest at θ₀',assume:'Massless string, no air',lines:[L`v^2=2gL(\cos\varphi-\cos\theta_0)`,L`T-mg\cos\varphi=\dfrac{mv^2}{L}`,L`T=mg(3\cos\varphi-2\cos\theta_0)`],plug:L`T=(${m})(9.8)(3\cos${ph}^\circ-2\cos${th0}^\circ)=${fmt(T)}\text{ N}`,ans:L`${fmt(T)}\text{ N}`})};
+}},
+{id:'H5',topic:'energy',hard:true,name:'★ Spring launch up a rough incline: distance',gen(R){
+  const m=R.pick([0.2,0.5,1]),k=R.pick([200,400,600,800]),x=R.pick([0.05,0.1,0.15]),th=R.pick([20,30,37]),mu=R.pick([0.1,0.2,0.3]);const s=k*x*x/(2*m*G*(S(th)+mu*C(th)));
+  if(s<=x) return GENS.find(g=>g.id==='H5').gen(mkR(Math.floor(R.f()*1e9)));
+  return {stem:L`A spring (\(k=${k}\text{ N/m}\)) at the bottom of a \(${th}^\circ\) incline is compressed \(${x}\text{ m}\) by a \(${m}\text{ kg}\) block and released. \(\mu_k=${mu}\) everywhere. How far up the slope (measured from the release point) does the block go?`,fig:sceneIncline(th,{spring:true,pos:0.2}),
+  steps:[
+   {kind:'multi',prompt:'Step 1: Bar chart from release to the highest point. Non-zero bars?',options:[
+     {t:L`\(U_s\) initial`,ok:true,why:'Compressed spring.'},{t:L`\(U_g\) final`,ok:true,why:'It ends higher (Ug = 0 at release).'},{t:L`\(\Delta E_{th}\)`,ok:true,why:'Friction over the whole distance s.'},{t:L`\(K\) final`,ok:false,why:'At the highest point it stops.'},{t:L`\(U_s\) final`,ok:false,why:'It left the spring (s > x).'}],
+    after:barChart({Us0:5,Ug1:3,Eth:2,lbl:{Us0:'½kx²',Ug1:'mgs sinθ',Eth:'μmg cosθ s'}})},
+   {kind:'mc',prompt:'Step 2: Equation:',choices:[
+     {t:L`\(\tfrac12kx^2=mgs\sin\theta+\mu_kmg\cos\theta\,s\)`,ok:true,why:'One term per bar.'},
+     {t:L`\(\tfrac12kx^2=mgs\sin\theta\)`,ok:false,why:'You left out the friction bar.'},
+     {t:L`\(\tfrac12kx^2=mgs\sin\theta+\mu_kmg\,s\)`,ok:false,why:'On a ramp N = mg cosθ.'}]}],
+  final:{prompt:L`\(s=\dfrac{kx^2}{2mg(\sin\theta+\mu_k\cos\theta)}\) (m):`,ans:s,unit:'m'},
+  solution:sol({principle:'Energy conservation with friction',constraint:'Starts and ends at rest',assume:'Ideal spring',lines:[L`\tfrac12kx^2=mgs(\sin\theta+\mu_k\cos\theta)`,L`s=\dfrac{kx^2}{2mg(\sin\theta+\mu_k\cos\theta)}`],plug:L`s=\dfrac{(${k})(${x})^2}{2(${m})(9.8)(\sin${th}^\circ+${mu}\cos${th}^\circ)}=${fmt(s)}\text{ m}`,ans:L`${fmt(s)}\text{ m}`})};
+}},
+{id:'H6',topic:'drag',hard:true,name:'★ Quadratic drag −cv² coasting (calculus)',gen(R){
+  const m=R.pick([0.5,1,2,5]),c=R.pick([0.05,0.1,0.2,0.5]),v0=R.pick([10,20,30]),t=R.pick([1,2,5,10]);const v=v0/(1+c*v0*t/m);
+  return {stem:L`A \(${m}\text{ kg}\) puck coasts on a horizontal surface with only air drag \(F=-cv^2\), \(c=${c}\text{ kg/m}\). It starts at \(${v0}\text{ m/s}\). Find its speed at \(t=${t}\text{ s}\).`,
+  steps:[
+   {kind:'mc',prompt:'Step 1: Separate variables in \(-cv^2=m\,dv/dt\):',choices:[
+     {t:L`\(\displaystyle\int_{v_0}^{v}\frac{dv}{v^2}=-\frac cm\int_0^tdt\)`,ok:true,why:'Divide both sides by m v².'},
+     {t:L`\(\displaystyle\int\frac{dv}{v}=-\frac cm\int dt\)`,ok:false,why:'That\'s for linear drag. Here it\'s v².'},
+     {t:'Use v = v₀ + at',ok:false,why:'a is not constant.'}]},
+   {kind:'mc',prompt:'Step 2: Integrate:',choices:[
+     {t:L`\(\dfrac1v-\dfrac1{v_0}=\dfrac cmt\Rightarrow v=\dfrac{v_0}{1+cv_0t/m}\)`,ok:true,why:L`\(\int v^{-2}dv=-v^{-1}\).`},
+     {t:L`\(v=v_0e^{-ct/m}\)`,ok:false,why:'That\'s the linear-drag answer.'},
+     {t:L`\(\ln\dfrac{v}{v_0}=-\dfrac cm t\)`,ok:false,why:'The integral of 1/v² is −1/v, not ln v.'}]}],
+  final:{prompt:L`\(v=\dfrac{v_0}{1+cv_0t/m}\) (m/s):`,ans:v,unit:'m/s'},
+  solution:sol({principle:L`\(\Sigma F=m\,dv/dt\)`,constraint:L`\(v(0)=v_0\)`,lines:[L`-cv^2=m\dfrac{dv}{dt}`,L`\int_{v_0}^{v}v^{-2}dv=-\dfrac cm\int_0^tdt`,L`-\dfrac1v+\dfrac1{v_0}=-\dfrac cmt\Rightarrow v=\dfrac{v_0}{1+cv_0t/m}`],plug:L`v=\dfrac{${v0}}{1+(${c})(${v0})(${t})/${m}}=${fmt(v)}\text{ m/s}`,ans:L`${fmt(v)}\text{ m/s}`})};
+}},
+{id:'H7',topic:'work',hard:true,name:'★ Variable force + friction: final speed',gen(R){
+  let m,b,D,mu,K;for(let i=0;i<50;i++){m=R.pick([1,2,3]);b=R.pick([2,3,4,6]);D=R.pick([2,3,4]);mu=R.pick([0.1,0.2,0.3]);K=b*D**3/3-mu*m*G*D;if(K>2)break;}
+  const v=Math.sqrt(2*K/m);
+  return {stem:L`A \(${m}\text{ kg}\) box starts at rest at \(x=0\) on a rough floor (\(\mu_k=${mu}\)). A horizontal force \(F(x)=${b}x^2\) (N) pushes it to \(x=${D}\text{ m}\). Find its speed there.`,
+  steps:[
+   {kind:'mc',prompt:'Step 1: Work done by F:',choices:[
+     {t:L`\(W_F=\int_0^D bx^2dx=\tfrac{bD^3}{3}\)`,ok:true,why:'Variable force → integrate.'},{t:L`\(W_F=bD^2\cdot D\)`,ok:false,why:'That uses the final force for the whole distance.'},{t:L`\(W_F=2bD\)`,ok:false,why:'That\'s the derivative.'}]},
+   {kind:'mc',prompt:'Step 2: Work-energy:',choices:[
+     {t:L`\(\tfrac{bD^3}{3}-\mu_kmgD=\tfrac12mv^2\)`,ok:true,why:'Net work = ΔK. Friction does negative work μmgD.'},{t:L`\(\tfrac{bD^3}{3}=\tfrac12mv^2\)`,ok:false,why:'You forgot friction.'},{t:L`\(\tfrac{bD^3}{3}+\mu_kmgD=\tfrac12mv^2\)`,ok:false,why:'Friction takes energy away.'}]}],
+  final:{prompt:'Speed at x = D (m/s):',ans:v,unit:'m/s'},
+  solution:sol({principle:L`Work-energy theorem \(W_{net}=\Delta K\)`,constraint:'Starts at rest',lines:[L`\int_0^Dbx^2dx-\mu_kmgD=\tfrac12mv^2`,L`v=\sqrt{\dfrac{2}{m}\left(\dfrac{bD^3}{3}-\mu_kmgD\right)}`],plug:L`v=\sqrt{\dfrac{2}{${m}}\left(\dfrac{${b}(${D})^3}{3}-(${mu})(${m})(9.8)(${D})\right)}=${fmt(v)}\text{ m/s}`,ans:L`${fmt(v)}\text{ m/s}`})};
+}},
 ];
 const TOPICS = {forces:'Forces & FBDs',drag:'Drag (calculus)',circular:'Circular motion',work:'Work & power',energy:'Energy bar charts',springs:'Springs',potential:'U(x) & F = −dU/dx'};
