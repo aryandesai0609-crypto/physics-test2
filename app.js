@@ -3,7 +3,7 @@ const $=s=>document.querySelector(s);
 const KEY='apc_test2_v1';
 const LS=(()=>{try{const t='__t';localStorage.setItem(t,'1');localStorage.removeItem(t);return localStorage;}catch(e){const m={};return{getItem:k=>m[k]??null,setItem:(k,v)=>{m[k]=String(v)},removeItem:k=>{delete m[k]}};}})();
 let ST0={};try{ST0=JSON.parse(LS.getItem(KEY)||'{}')}catch(e){}
-const ST=Object.assign({lessons:{},stats:{},mistakes:[],tests:[]},ST0);
+const ST=Object.assign({lessons:{},stats:{},mistakes:[],tests:[],plan:{},fl:{},flMiss:{}},ST0);
 const save=()=>{try{LS.setItem(KEY,JSON.stringify(ST))}catch(e){}};
 function math(el){ if(window.renderMathInElement) renderMathInElement(el,{delimiters:[{left:'\\[',right:'\\]',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false}); }
 function shuffle(a,r=Math.random){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -21,7 +21,7 @@ function dropMistake(item){const k=JSON.stringify(item);ST.mistakes=ST.mistakes.
 function topicOf(item){return item.type==='gen'?GEN_BY[item.gid].topic:item.type==='concept'?CON_BY[item.cid].topic:DER_BY[item.did].topic;}
 
 // ---------- Tabs ----------
-function show(tab){document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===tab));document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='p-'+tab);if(tab==='mistakes')renderMistakes();if(tab==='learn'&&!$('#lessonView').innerHTML)openLesson(LESSONS[0].id);if(tab==='practice'&&!$('#practiceHost').innerHTML)nextPractice();if(tab==='basics'&&!$('#bHost').innerHTML)bShow('facts');if(tab==='frq')renderFRQList();window.scrollTo(0,0);}
+function show(tab){document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===tab));document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='p-'+tab);if(tab==='mistakes')renderMistakes();if(tab==='learn'&&!$('#lessonView').innerHTML)openLesson(LESSONS[0].id);if(tab==='practice'&&!$('#practiceHost').innerHTML)nextPractice();if(tab==='basics'&&!$('#bHost').innerHTML)bShow('flash');if(tab==='home')renderPlan();if(tab==='frq')renderFRQList();window.scrollTo(0,0);}
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.t));
 
 // ---------- Countdown ----------
@@ -166,8 +166,8 @@ function renderFRQList(){const l=$('#frqList');l.innerHTML=FRQS.map(q=>{const b=
 // ---------- BASICS ----------
 ST.basics=ST.basics||{facts:{},method:{n:0,c:0},tf:{n:0,c:0},fbd:{n:0,c:0},bars:{n:0,c:0}};
 function bRec(k,ok){const s=ST.basics[k];s.n++;if(ok)s.c++;save();bStats();}
-function bStats(){const b=ST.basics;const known=Object.values(b.facts).filter(v=>v===1).length;$('#bStats').innerHTML=`Facts known: <b>${known}/${FACTS.length}</b> · Which principle: <b>${b.method.c}/${b.method.n}</b> · True/False: <b>${b.tf.c}/${b.tf.n}</b> · FBD builder: <b>${b.fbd.c}/${b.fbd.n}</b> · Bar charts: <b>${b.bars.c}/${b.bars.n}</b>`;}
-function bShow(k){document.querySelectorAll('.bsub').forEach(b=>b.classList.toggle('on',b.dataset.k===k));({facts:bFacts,method:bMethod,tf:bTF,fbd:bFBD,bars:bBars})[k]();}
+function bStats(){const b=ST.basics;const fl=ST.fl||{};const fc=(typeof FCARDS!=='undefined'?FCARDS:[]).filter(c=>c.sec!=='X');const got=fc.filter(c=>fl[c.id]===1).length;const miss=fc.filter(c=>(ST.flMiss||{})[c.id]).length;$('#bStats').innerHTML=`Flashcards A–F: <b>${got}/${fc.length}</b> got it${miss?` (${miss} to review)`:''} · Basics Quiz best: <b>${b.quizBest==null?'not taken':b.quizBest+'/20'}</b> · Which principle: <b>${b.method.c}/${b.method.n}</b> · True/False: <b>${b.tf.c}/${b.tf.n}</b> · FBD builder: <b>${b.fbd.c}/${b.fbd.n}</b> · Bar charts: <b>${b.bars.c}/${b.bars.n}</b>`;}
+function bShow(k){document.querySelectorAll('.bsub').forEach(b=>b.classList.toggle('on',b.dataset.k===k));FQ=null;({facts:flashMenu,flash:flashMenu,quiz:bQuiz,method:bMethod,tf:bTF,fbd:bFBD,bars:bBars})[k]();}
 document.querySelectorAll('.bsub').forEach(b=>b.onclick=()=>bShow(b.dataset.k));
 function bFacts(){const h=$('#bHost');const groups=[...new Set(FACTS.map(f=>f[0]))];const onlyUnsure=h.dataset.unsure==='1';
   h.innerHTML=`<div class="card"><p>Read the question, say the answer out loud (or write it), THEN click to check. Mark each one. Goal: all ${FACTS.length} marked "I knew it."</p><button class="btn ghost small" id="fx">${onlyUnsure?'Show all':'Show only the ones I don\'t know yet'}</button> <button class="btn ghost small" id="fopen">Reveal all (reading mode)</button></div>`+
@@ -225,3 +225,88 @@ function renderProgress(){const done=LESSONS.filter(l=>ST.lessons[l.id]).length;
 bStats();renderLessonList();$('#cheatHost').innerHTML=CHEAT;math($('#cheatHost'));renderProgress();math($('#p-home'));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{show(b.dataset.go);if(b.dataset.lesson)openLesson(b.dataset.lesson);if(b.dataset.go==='practice'&&!$('#practiceHost').innerHTML)nextPractice();});
 show('home');
+
+
+// ================= PLAN (Home) =================
+ST.plan=ST.plan||{};ST.fl=ST.fl||{};ST.basics.quizBest=ST.basics.quizBest??null;
+function goAct(a){
+  if(a.yt){window.open('https://www.youtube.com/watch?v='+a.yt,'_blank','noopener');return;}
+  if(a.lesson){show('learn');openLesson(a.lesson);return;}
+  if(a.basics){show('basics');bShow(a.basics);return;}
+  if(a.flash){show('basics');bShow('flash');startFlash(a.flash==='missed'?'missed':a.flash.split(''));return;}
+  if(a.practice){show('practice');setTopics(a.practice.topics);$('#mode').value=a.practice.mode;$('#kind').value=a.practice.kind;nextPractice();return;}
+  if(a.frq){show('frq');renderFRQList();$('#frqList').querySelectorAll('.li').forEach(x=>x.classList.toggle('cur',x.dataset.id===a.frq));renderFRQ($('#frqView'),FRQ_BY[a.frq]);return;}
+  if(a.tab){show(a.tab);}
+}
+function renderPlan(){
+  const host=$('#planHost');let total=0,done=0;
+  host.innerHTML=PLAN.map((d,di)=>{const nd=d.blocks.filter(b=>ST.plan[b.id]).length;total+=d.blocks.length;done+=nd;
+    return `<div class="card day"><h2>${d.day} <span class="small mut">${nd}/${d.blocks.length} done</span></h2><p class="note">${d.goal}</p>
+    ${d.blocks.map(b=>`<div class="pblock ${ST.plan[b.id]?'pdone':''}" id="pb-${b.id}">
+      <label class="pchk"><input type="checkbox" data-id="${b.id}" ${ST.plan[b.id]?'checked':''}> <b>${b.title}</b> <span class="ptime">${b.time}</span></label>
+      <ol class="phow">${b.how.map(h=>`<li>${h}</li>`).join('')}</ol>
+      ${b.acts.length?`<div class="pacts">${b.acts.map((a,ai)=>`<button class="btn small ${a.yt?'ghost yt':''}" data-b="${b.id}" data-a="${ai}">${a.t}</button>`).join('')}</div>`:''}
+      <div class="pdonewhen">Done when: ${b.done}</div></div>`).join('')}</div>`;}).join('');
+  $('#planBar').style.width=Math.round(100*done/total)+'%';$('#planPct').textContent=`${done}/${total} steps done`;
+  host.querySelectorAll('.pchk input').forEach(c=>c.onchange=()=>{ST.plan[c.dataset.id]=c.checked;save();renderPlan();});
+  host.querySelectorAll('.pacts button').forEach(btn=>btn.onclick=()=>{const b=PLAN.flatMap(d=>d.blocks).find(x=>x.id===btn.dataset.b);goAct(b.acts[+btn.dataset.a]);});
+}
+function nextStep(){const b=PLAN.flatMap(d=>d.blocks).find(x=>!ST.plan[x.id]);if(!b){alert('Every step is done. Go get some sleep and crush the test!');return;}
+  show('home');const el=document.getElementById('pb-'+b.id);el.scrollIntoView({block:'center',behavior:'smooth'});el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),2000);}
+
+// ================= FOCUS TIMER =================
+const FT={left:25*60,mode:'focus',run:false,id:null};
+function ftDraw(){const m=Math.floor(FT.left/60),s=FT.left%60;$('#ftTime').textContent=`${FT.mode==='focus'?'Focus':'Break'} ${m}:${String(s).padStart(2,'0')}`;$('#ftBtn').textContent=FT.run?'Pause':'Start';$('#ftBox').classList.toggle('brk',FT.mode==='break');}
+function ftBeep(){try{const c=new (window.AudioContext||window.webkitAudioContext)();[0,0.3,0.6].forEach(t=>{const o=c.createOscillator();o.frequency.value=880;o.connect(c.destination);o.start(c.currentTime+t);o.stop(c.currentTime+t+0.15);});}catch(e){}}
+function ftTick(){if(!FT.run)return;FT.left--;if(FT.left<=0){ftBeep();if(FT.mode==='focus'){FT.mode='break';FT.left=5*60;}else{FT.mode='focus';FT.left=25*60;FT.run=false;clearInterval(FT.id);}}ftDraw();}
+$('#ftBtn').onclick=()=>{FT.run=!FT.run;clearInterval(FT.id);if(FT.run)FT.id=setInterval(ftTick,1000);ftDraw();};
+$('#ftReset').onclick=()=>{FT.run=false;clearInterval(FT.id);FT.mode='focus';FT.left=25*60;ftDraw();};
+
+// ================= FLASHCARDS =================
+var FCARDS=FLASH.map((c,i)=>({id:'f'+i,sec:c[0],q:c[1],a:c[2]})).concat(FACTS.map((f,i)=>({id:'x'+i,sec:'X',q:f[1],a:f[2]})));
+var FQ=null;
+function flashMenu(){const h=$('#bHost');const secs=Object.keys(FLASH_SECTIONS);const missed=FCARDS.filter(c=>ST.flMiss[c.id]).length;
+  h.innerHTML=`<div class="card"><h3>Flashcards</h3><p>Read the question. <b>Say the answer out loud</b> (or write it). THEN flip. Be honest: if you weren't sure, hit <b>Again</b>. "Again" cards come back until you get them.</p>
+  <div class="fsecs">${secs.map(k=>{const cs=FCARDS.filter(c=>c.sec===k);const got=cs.filter(c=>ST.fl[c.id]===1).length;return `<label class="pill"><input type="checkbox" value="${k}" ${k!=='X'?'checked':''}> ${FLASH_SECTIONS[k]} <span class="small mut">${got}/${cs.length}</span></label>`;}).join('')}</div>
+  <div class="row" style="margin-top:10px"><button class="btn" id="fsStart">Start selected</button><button class="btn ghost" id="fsMissed" ${missed?'':'disabled'}>Missed only (${missed})</button><button class="btn ghost" id="fsList">List view (read all)</button></div></div><div id="fcHost"></div>`;
+  const sel=()=>[...h.querySelectorAll('.fsecs input:checked')].map(i=>i.value);
+  $('#fsStart').onclick=()=>startFlash(sel());$('#fsMissed').onclick=()=>startFlash('missed');
+  $('#fsList').onclick=()=>{const s=sel();$('#fcHost').innerHTML=s.map(k=>`<div class="card"><h3>${FLASH_SECTIONS[k]}</h3><table class="tbl">${FCARDS.filter(c=>c.sec===k).map(c=>`<tr><td><b>${c.q}</b></td><td>${c.a}</td></tr>`).join('')}</table></div>`).join('');math($('#fcHost'));};}
+function startFlash(secs){if($('#bHost .fsecs')==null)flashMenu();
+  const cards=secs==='missed'?FCARDS.filter(c=>ST.flMiss[c.id]):FCARDS.filter(c=>secs.includes(c.sec));
+  if(!cards.length){$('#fcHost').innerHTML=`<div class="card">${secs==='missed'?'No missed cards right now. If you haven\'t done the flashcards yet, pick sections above and press "Start selected".':'No cards in those sections.'}</div>`;return;}
+  FQ={q:shuffle(cards),got:0,again:0,flip:false,n:cards.length,missedThisRound:new Set()};drawCard();$('#fcHost').scrollIntoView({block:'start'});}
+function drawCard(){const host=$('#fcHost');if(!FQ)return;
+  if(!FQ.q.length){const m=FQ.missedThisRound.size;host.innerHTML=`<div class="card fcard2 donecard"><h2>Round done!</h2><p>${FQ.n} cards. ${m?`You had to repeat ${m} of them, and they're saved under "Missed only".`:'You got every card on the first try!'}</p><button class="btn" id="fcAgain">Run missed only</button> <button class="btn ghost" id="fcMenu">Back to sections</button></div>`;
+    $('#fcAgain').onclick=()=>startFlash('missed');$('#fcMenu').onclick=()=>{FQ=null;flashMenu();};bStats();return;}
+  const c=FQ.q[0];
+  host.innerHTML=`<div class="card fcard2"><div class="meta">${FLASH_SECTIONS[c.sec]} · ${FQ.q.length} left · ✓ ${FQ.got} · ↻ ${FQ.again}</div>
+  <div class="fcq">${c.q}</div>${FQ.flip?`<div class="fca">${c.a}</div><div class="row"><button class="btn good-b" id="fcGot">Got it ✓ <span class="small">(1)</span></button><button class="btn bad-b" id="fcAg">Again ✗ <span class="small">(2)</span></button></div>`:`<button class="btn" id="fcFlip">Show answer <span class="small">(space)</span></button>`}
+  <div class="small mut" style="margin-top:8px">Keyboard: space = flip, 1 = got it, 2 = again</div></div>`;math(host);
+  if(FQ.flip){$('#fcGot').onclick=()=>fcMark(true);$('#fcAg').onclick=()=>fcMark(false);}else $('#fcFlip').onclick=()=>{FQ.flip=true;drawCard();};}
+function fcMark(ok){const c=FQ.q.shift();FQ.flip=false;if(ok){FQ.got++;ST.fl[c.id]=1;if(!FQ.missedThisRound.has(c.id))delete ST.flMiss[c.id];}else{FQ.again++;ST.fl[c.id]=0;ST.flMiss[c.id]=true;FQ.missedThisRound.add(c.id);FQ.q.push(c);}save();drawCard();bStats();}
+document.addEventListener('keydown',e=>{if(!FQ||!$('#fcHost')||$('#p-basics').hidden||!document.querySelector('.fcard2:not(.donecard)'))return;if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if((e.key===' '||e.key==='Enter')&&!FQ.flip){e.preventDefault();FQ.flip=true;drawCard();}else if(FQ.flip&&e.key==='1')fcMark(true);else if(FQ.flip&&e.key==='2')fcMark(false);});
+
+// ================= BASICS QUIZ =================
+var BQ=null;
+function buildBQ(){const qs=[];
+  shuffle(TF).slice(0,9).forEach(([q,ans,why])=>qs.push({kind:'tf',q,ch:[{t:'True',ok:ans},{t:'False',ok:!ans}],why}));
+  shuffle(METHOD_Q).slice(0,6).forEach(([q,ans,why])=>qs.push({kind:'method',q:'Which principle do you START with? '+q,ch:METHOD_OPTS.map(o=>({t:o.t,ok:o.k===ans})),why}));
+  const pool=[];FBD_S.forEach(s=>s.forces.forEach(f=>pool.push({s,f})));
+  shuffle(pool).slice(0,5).forEach(({s,f})=>qs.push({kind:'fbd',q:`FBD: <b>${s.title}</b><br>The force "${f.n}": which direction (or not acting)?`,ch:f.opts.map(o=>({t:o,ok:o===f.ok})),why:f.why}));
+  return shuffle(qs);}
+function bQuiz(){BQ={qs:buildBQ(),i:0,score:0,missed:[]};drawBQ();}
+function drawBQ(){const h=$('#bHost');
+  if(BQ.i>=BQ.qs.length){const best=Math.max(ST.basics.quizBest??0,BQ.score);ST.basics.quizBest=best;save();bStats();
+    h.innerHTML=`<div class="card"><h2>Basics Quiz: ${BQ.score}/${BQ.qs.length}</h2><p>${BQ.score>=16?'Solid! You\'re ready for topic practice.':'Under 16: redo the flashcards you marked "Again", then retake this quiz.'}</p>${BQ.missed.length?`<h3>What you missed</h3>${BQ.missed.map(m=>`<div class="mrow"><div><div>${m.q}</div><div class="good small">Answer: ${m.ans}. ${m.why}</div></div></div>`).join('')}`:''}<button class="btn" id="bqAgain">Take a new quiz</button> <button class="btn ghost" id="bqFlash">Flashcards: missed only</button></div>`;
+    $('#bqAgain').onclick=bQuiz;$('#bqFlash').onclick=()=>{bShow('flash');startFlash('missed');};return;}
+  const q=BQ.qs[BQ.i];const ch=q.kind==='tf'?q.ch:shuffle(q.ch);
+  h.innerHTML=`<div class="card"><div class="meta">Basics Quiz · question ${BQ.i+1} of ${BQ.qs.length} · score ${BQ.score}</div><div class="stem">${q.q}</div><div class="choices">${ch.map((c,i)=>`<button class="ch" data-i="${i}">${c.t}</button>`).join('')}</div><div class="fb"></div></div>`;
+  h.querySelectorAll('.ch').forEach(b=>b.onclick=()=>{const c=ch[+b.dataset.i];const right=ch.find(x=>x.ok);h.querySelectorAll('.ch').forEach((x,j)=>{x.disabled=true;if(ch[j].ok)x.classList.add('right');});
+    if(c.ok)BQ.score++;else{b.classList.add('wrong');BQ.missed.push({q:q.q,ans:right.t,why:q.why});}
+    h.querySelector('.fb').innerHTML=`<div class="${c.ok?'good':'bad'}">${c.ok?'✓ ':'✗ Answer: '+right.t+'. '}${q.why}</div><button class="btn" id="bqNext">${BQ.i+1<BQ.qs.length?'Next →':'See my score'}</button>`;
+    $('#bqNext').onclick=()=>{BQ.i++;drawBQ();};});}
+$('#nextStepBtn').onclick=nextStep;renderPlan();ftDraw();
+
+bStats();
